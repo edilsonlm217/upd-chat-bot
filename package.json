@@ -1,0 +1,19 @@
+{
+  "name": "upd-chat-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node ./src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "sucrase": "^3.18.1"
+  },
+  "dependencies": {
+    "venom-bot": "^3.0.15"
+  }
+}
