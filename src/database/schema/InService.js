@@ -22,6 +22,10 @@ const InService = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    serviceType: {
+      type: String,
+      default: 'detached',
+    },
   },
   {
     timestamps: true,
