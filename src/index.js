@@ -8,11 +8,11 @@ async function ChatbotServiceStart() {
     if (message.sender.name === 'Pai') {
       const stage = await Chatbot.getStage(message);
 
-      const resp = stages[stage].obj.execute(
-        message.from,
-        message.body,
-        message.sender.name
-      );
+      try {
+        resp = await stages[stage].obj.execute(message);
+      } catch (error) {
+        console.log(`[LOG]: ${error}`);
+      }
 
       for (let index = 0; index < resp.length; index++) {
         const element = resp[index];
