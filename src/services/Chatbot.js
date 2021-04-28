@@ -24,14 +24,18 @@ class Chatbot {
       const { lastMessageReceivedAt } = service;
 
       if (differenceInMinutes(new Date(), lastMessageReceivedAt) > 15) {
+        console.log('[LOG]: Atendimento expirado');
         await service.remove();
       } else {
+        console.log('[LOG]: Atendimento encontrado');
         return service.stage;
       }
     }
 
+    console.log('[LOG]: Iniciando novo atendimento');
     // Inicia um novo atendimento
     const newService = await InService.create({
+      // TODO: Criar um número de protocolo significativo
       protocolNumber: '12456489712345',
       senderId,
       userName: sender.name,
