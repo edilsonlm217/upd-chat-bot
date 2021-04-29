@@ -13,14 +13,14 @@ async function execute(message) {
     service.serviceType = 'attached';
     await service.save();
 
-    response = `Ola cliente,
-      Para qual desses assuntos deseja atendimento:
-      1. Financeiro
-      2. Suporte tecnico
-      3. Canais de atendimento
-      4. Nossos planos
-      5. Falar com atendente
-      #. Finalizar o atendimento`;
+    response = `Ola ${cliente},
+    Para qual desses assuntos deseja atendimento:
+    1. Financeiro
+    2. Suporte tecnico
+    3. Canais de atendimento (não implementado)
+    4. Nossos planos (não implementado)
+    5. Falar com atendente (não implementado)
+    #. Finalizar o atendimento`;
   }
 
   if (body == 1) {
