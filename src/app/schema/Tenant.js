@@ -18,6 +18,10 @@ const TenantSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    port: {
+      type: String,
+      required: true,
+    },
     username: {
       type: String,
       required: true,
