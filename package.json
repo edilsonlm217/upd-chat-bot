@@ -13,7 +13,8 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^2.0.7"
+    "nodemon": "^2.0.7",
+    "sucrase": "^3.18.1"
   },
   "dependencies": {
     "cors": "^2.8.5",
@@ -21,6 +22,6 @@
     "http": "^0.0.1-security",
     "mongoose": "^5.12.7",
     "sequelize": "^6.6.2",
-    "sucrase": "^3.18.1"
+    "venom-bot": "^3.0.15"
   }
 }
