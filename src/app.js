@@ -3,7 +3,8 @@ import cors from 'cors';
 import http from 'http';
 import routes from './routes';
 
-import './database';
+import SessionPool from './services/SessionPool';
+import Mongo from './database';
 
 class App {
   constructor() {
@@ -12,6 +13,10 @@ class App {
 
     this.middlewares();
     this.routes();
+
+    // Inicializa conexão com banco de dados
+    Mongo.start().then(() => { SessionPool.preloadSessions() });
+
   }
 
   middlewares() {
