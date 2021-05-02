@@ -2,11 +2,7 @@ import mongoose from 'mongoose';
 import databaseConfig from '../config/database';
 
 class Database {
-  constructor() {
-    this.mongo();
-  }
-
-  async mongo() {
+  async start() {
     console.log('[LOG]: Connecting to mongo database');
     try {
       this.mongoConnection = await mongoose.connect(
