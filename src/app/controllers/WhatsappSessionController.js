@@ -20,7 +20,7 @@ class WhatsappSessionController {
 
       SessionPool.add(client);
     } catch (error) {
-      console.log(error);
+      console.log(`[LOG]: ${error}`);
     }
 
     return res.json({ ok: true });
