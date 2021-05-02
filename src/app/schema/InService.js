@@ -12,7 +12,7 @@ const InServiceSchema = new mongoose.Schema(
     },
     userName: {
       type: String,
-      required: true,
+      required: false,
     },
     lastMessageReceivedAt: {
       type: Date,
