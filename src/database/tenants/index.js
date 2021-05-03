@@ -20,7 +20,8 @@ async function loadTenantConnections() {
     }
 
     providers.map(async tenant => {
-      const { sessionName, dialect, host, username, password, database, port } = tenant;
+      const { sessionName } = tenant;
+      const { dialect, host, username, password, database, port } = tenant;
 
       try {
         const connection = await new Sequelize({
@@ -38,8 +39,9 @@ async function loadTenantConnections() {
         });
 
         tenantDatabaseConnections[sessionName] = connection;
+        console.log(`[LOG]: Successfully connected to tenant's database`);
       } catch (error) {
-        console.log(`[LOG]: ${error}`);
+        console.log(`[LOG]: Failed to connect to tenant's database`);
       }
     });
   } catch (error) {
