@@ -39,6 +39,7 @@ async function loadTenantConnections() {
     } catch (error) {
       console.log(`[LOG]: ${error}`);
     }
+    console.log(tenantDatabaseConnections);
   });
 }
 
