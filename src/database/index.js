@@ -14,8 +14,7 @@ class Database {
 
       console.log('[LOG]: Successfull connected to mongo database');
     } catch (error) {
-      console.log('[LOG]: Error connection to mongo!');
-      console.log(error);
+      console.log('[LOG]: Error connecting to mongo!');
     }
   }
 }
