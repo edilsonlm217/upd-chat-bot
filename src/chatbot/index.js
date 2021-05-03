@@ -1,6 +1,6 @@
 const bot = require('venom-bot');
 import { differenceInMinutes } from 'date-fns';
-import { switchDatabase } from '../database/tenants';
+import ConnectionResolver from '../services/ConnectionResolver';
 import fs from 'fs';
 
 import Tenant from '../app/schema/Tenant';
@@ -21,7 +21,7 @@ export default new function Chatbot() {
 
       client.onMessage(async message => {
         if (message.isGroupMsg === false) {
-          switchDatabase(sessionName);
+          ConnectionResolver.switchDatabase(sessionName);
           const stage = await getStage(message);
 
           try {
