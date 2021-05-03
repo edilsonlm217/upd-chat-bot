@@ -1,12 +1,20 @@
-const venom = require('venom-bot');
-
+import Tenant from '../schema/Tenant';
 import Chatbot from '../../chatbot';
 
 class WhatsappSessionController {
   async create(req, res) {
     const { sessionName } = req.params;
 
-    Chatbot.listenMessages(sessionName);
+    const tenant = await Tenant.findOne({
+      sessionName,
+      isActive: true,
+    });
+
+    if (!tenant) {
+      return;
+    }
+    
+    Chatbot.listenMessages(tenant.sessionName);
 
     return res.json({ ok: true });
   }
