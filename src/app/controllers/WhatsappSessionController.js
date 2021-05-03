@@ -15,6 +15,7 @@ class WhatsappSessionController {
         return;
       }
 
+      // TODO Implementar inicialização do socket.io para envio
       Chatbot.listenMessages(tenant.sessionName);
 
       return res.json({ ok: true });
