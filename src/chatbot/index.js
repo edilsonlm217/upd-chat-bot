@@ -11,16 +11,15 @@ import stages from './stages/index';
 export default new function Chatbot() {
   function constructor() { }
 
-  async function listenMessages(tenant) {
-    const client = await bot.create(tenant.sessionName, undefined, undefined, {
+  async function listenMessages(sessionName) {
+    const client = await bot.create(sessionName, undefined, undefined, {
       logQR: false,
       disableWelcome: true,
       autoClose: 30000,
     });
 
     client.onMessage(async message => {
-      console.log();
-      switchDatabase(tenant.sessionName);
+      switchDatabase(sessionName);
 
       if (message.isGroupMsg === false) {
         const stage = await getStage(message);
@@ -85,7 +84,7 @@ export default new function Chatbot() {
             return;
           }
 
-          await listenMessages(tenant);
+          await listenMessages(tenant.sessionName);
 
         });
       }
@@ -96,7 +95,7 @@ export default new function Chatbot() {
     init: () => {
       reload();
     },
-    listenMessages: () => { listenMessages() }
+    listenMessages: (sessionName) => { listenMessages(sessionName) }
   }
 
   constructor.prototype = ChatbotPrototype;
