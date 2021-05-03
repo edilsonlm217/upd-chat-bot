@@ -4,6 +4,7 @@ async function execute(message) {
   try {
     const [senderId,] = message.sender.id.split('@c.us');
     const service = await InService.findOne({ senderId });
+    const { body } = message;
 
     var response = '';
 
@@ -11,8 +12,6 @@ async function execute(message) {
 
     switch (serviceType) {
       case 'attached':
-        const { body } = message;
-
         // 1. Financeiro
         // 2. Suporte tecnico
         // 3. Canais de atendimento
@@ -49,8 +48,11 @@ async function execute(message) {
         break;
 
       case 'detached':
-        // const { body } = message;
-        //
+        if (body === '#') {
+          await service.remove();
+          return ["Atendimento finalizado com sucesso"];
+        }
+
         break;
     }
 
