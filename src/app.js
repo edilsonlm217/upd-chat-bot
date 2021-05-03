@@ -3,8 +3,10 @@ import cors from 'cors';
 import http from 'http';
 import routes from './routes';
 
-import SessionPool from './services/SessionPool';
 import Mongo from './database';
+import Chatbot from './chatbot';
+
+import { loadTenantConnections } from './database/tenants';
 
 class App {
   constructor() {
@@ -13,10 +15,9 @@ class App {
 
     this.middlewares();
     this.routes();
-
-    // Inicializa conexão com banco de dados
-    Mongo.start().then(() => { SessionPool.preloadSessions() });
-
+    this.mongo();
+    this.tenats();
+    this.bot();
   }
 
   middlewares() {
@@ -26,6 +27,18 @@ class App {
 
   routes() {
     this.app.use(routes);
+  }
+
+  mongo() {
+    Mongo.start();
+  }
+
+  bot() {
+    Chatbot.init();
+  }
+
+  tenats() {
+    loadTenantConnections();
   }
 }
 
