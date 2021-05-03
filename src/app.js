@@ -5,8 +5,7 @@ import routes from './routes';
 
 import Mongo from './database';
 import Chatbot from './chatbot';
-
-import { loadTenantConnections } from './database/tenants';
+import ConnectionResolver from './services/ConnectionResolver';
 
 class App {
   constructor() {
@@ -33,12 +32,12 @@ class App {
     this.bot();
   }
 
-  bot() {
-    Chatbot.init();
+  async bot() {
+    await Chatbot.init();
   }
 
   async tenats() {
-    await loadTenantConnections();
+    await ConnectionResolver.init();
   }
 }
 
