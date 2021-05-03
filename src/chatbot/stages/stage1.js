@@ -12,18 +12,18 @@ async function execute(message) {
   var response = '';
 
   if (isValidCPF) {
-    // const client = await Client.findOne({
-    //   where: {
-    //     cpf_cnpj: body,
-    //   },
-    // });
+    const client = await Client.findOne({
+      where: {
+        cpf_cnpj: body,
+      },
+    });
 
-    // const [clientName] = client.nome.split(' ');
+    const [clientName] = client.nome.split(' ');
 
     service.serviceType = 'attached';
     await service.save();
 
-    response = `Ola clientName
+    response = `Ola ${clientName}
     Para qual desses assuntos deseja atendimento:
     1. Financeiro
     2. Suporte tecnico
