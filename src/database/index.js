@@ -3,7 +3,6 @@ import databaseConfig from '../config/database';
 
 class Database {
   async start() {
-    console.log('[LOG]: Connecting to mongo database');
     try {
       this.mongoConnection = await mongoose.connect(
         databaseConfig.mongodb_url,
@@ -13,7 +12,7 @@ class Database {
         }
       );
 
-      console.log('[LOG]: Successfull connected');
+      console.log('[LOG]: Successfull connected to mongo database');
     } catch (error) {
       console.log('[LOG]: Error connection to mongo!');
       console.log(error);
