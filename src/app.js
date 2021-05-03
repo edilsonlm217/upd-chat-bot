@@ -17,7 +17,6 @@ class App {
     this.routes();
     this.mongo();
     this.tenats();
-    this.bot();
   }
 
   middlewares() {
@@ -29,16 +28,17 @@ class App {
     this.app.use(routes);
   }
 
-  mongo() {
-    Mongo.start();
+  async mongo() {
+    await Mongo.start();
+    this.bot();
   }
 
   bot() {
     Chatbot.init();
   }
 
-  tenats() {
-    loadTenantConnections();
+  async tenats() {
+    await loadTenantConnections();
   }
 }
 
