@@ -20,7 +20,8 @@ export default new function Chatbot() {
       });
 
       client.onMessage(async message => {
-        if (switchDatabase(sessionName) && message.isGroupMsg === false) {
+        if (message.isGroupMsg === false) {
+          switchDatabase(sessionName);
           const stage = await getStage(message);
 
           try {
@@ -97,7 +98,7 @@ export default new function Chatbot() {
               return;
             }
 
-            await listenMessages(tenant.sessionName);
+            listenMessages(tenant.sessionName);
 
           });
         }
