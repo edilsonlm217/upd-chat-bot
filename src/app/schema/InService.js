@@ -2,29 +2,37 @@ import mongoose from 'mongoose';
 
 const InServiceSchema = new mongoose.Schema(
   {
+    sessionName: {
+      type: String,
+      required: true,
+    },
     protocolNumber: {
       type: String,
-      required: true,
+      default: 12456489712345, // TODO: Criar um número de protocolo significativo
     },
-    senderId: {
-      type: String,
-      required: true,
+    stage: {
+      type: Number,
+      default: 0,
     },
-    userName: {
+    menuStage: {
       type: String,
-      required: false,
+      default: "principal",
     },
     lastMessageReceivedAt: {
       type: Date,
       required: true,
     },
-    stage: {
+    ageInMinutes: {
       type: Number,
       default: 0,
     },
     serviceType: {
       type: String,
       default: 'detached',
+    },
+    senderId: {
+      type: String,
+      required: true,
     },
   },
   {
