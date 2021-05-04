@@ -1,65 +1,130 @@
 import InService from '../../app/schema/InService';
 
-async function execute(message) {
-  try {
-    const [senderId,] = message.sender.id.split('@c.us');
-    const service = await InService.findOne({ senderId });
-    const { body } = message;
+const attachedResponses = {
+  '1': 'Financeiro',
+  '2': 'Suporte tecnico',
+  '3': 'Canais de atendimento',
+  '4': 'Nossos planos',
+  '5': 'Falar com atendente',
+  '#': 'Finalizar o atendimento',
+};
 
-    var response = '';
+const detachedResponses = {
+  '1': 'Nossos planos',
+  '2': 'Canais de atendimento',
+  '#': 'Finalizar o atendimento',
+};
 
-    const { serviceType } = service;
+async function handleResponse(message, serviceType) {
+  var response = undefined;
 
-    switch (serviceType) {
-      case 'attached':
-        // 1. Financeiro
-        // 2. Suporte tecnico
-        // 3. Canais de atendimento
-        // 4. Nossos planos
-        // 5. Falar com atendente
-        // #. Finalizar o atendimento`
+  switch (serviceType) {
+    case 'attached':
+      response = attachedResponses[message.body];
 
-        if (body === '#') {
-          await service.remove();
-          return ["Atendimento finalizado com sucesso"];
-        }
+      if (!response) {
+        return 'Opção inválida';
+      }
 
-        if (body == 1) {
-          response = `*MenuFinanceiro*
-          1. Segunda via de fatura *(não implementado)*
-          2. Desbloqueio de confiança *(não implementado)*
-          3. Cancelamento *(não implementado)*
-          4. Falar com atendente *(não implementado)*
-          0. Menu principal *(não implementado)*
-          #. Finalizar atendimento *(não implementado)*`;
-        }
+      return response;
+      
+    case 'detached':
+      response = detachedResponses[message.body];
 
-        if (body == 2) {
-          response = `*MenuSuporte*
-          1. Sem internet *(não implementado)*
-          2. Internet lenta *(não implementado)*
-          3. Senha do wifi *(não implementado)*
-          4. Consultar chamado *(não implementado)*
-          5. Falar com atendente *(não implementado)*
-          0. Menu principal *(não implementado)*
-          #. Finalizar atendimento *(não implementado)*`;
-        }
+      if (!response) {
+        return 'Opção inválida';
+      }
 
-        break;
-
-      case 'detached':
-        if (body === '#') {
-          await service.remove();
-          return ["Atendimento finalizado com sucesso"];
-        }
-
-        break;
-    }
-
-    return [response];
-  } catch (error) {
-    console.log('[LOG]: Failed to execute stage 2');
+      return response;
   }
+}
+
+async function getServiceType(message) {
+  const [senderId,] = message.sender.id.split('@c.us');
+  const service = await InService.findOne({ senderId });
+  if (service.serviceType === 'attached') {
+    return {
+      service,
+      serviceType: 'attached',
+    };
+  }
+
+  return {
+    service,
+    serviceType: 'detached',
+  };
+}
+
+async function goNextStage(service) {
+  service.stage = 3;
+  await service.save();
+}
+
+async function execute(message) {
+  const { service, serviceType } = await getServiceType(message);
+  const selectedOption = await handleResponse(message, serviceType);
+  
+  var response = [];
+  var msg = null;
+
+  switch (selectedOption) {
+    case 'Financeiro':
+      msg = `*MenuFinanceiro*
+        1. Segunda via de fatura
+        2. Desbloqueio de confiança
+        3. Cancelamento
+        4. Falar com atendente
+        0. Menu principal
+        #. Finalizar atendimento
+      `;
+
+      await goNextStage(service);
+      response.push(msg);
+      break;
+
+    case 'Suporte tecnico':
+      msg = `*MenuSuporte*
+        1. Sem internet
+        2. Internet lenta
+        3. Senha do wifi
+        4. Consultar chamado
+        5. Falar com atendente
+        0. Menu principal
+        #. Finalizar atendimento
+      `;
+
+      await goNextStage(service);
+      response.push(msg);
+      break;
+
+    case 'Canais de atendimento':
+      msg = `Este menu ainda não foi implementado. Selecione outra opção.`;
+      response.push(msg);
+      break;
+
+    case 'Nossos planos':
+      msg = `Este menu ainda não foi implementado. Selecione outra opção.`;
+      response.push(msg);
+      break;
+
+    case 'Falar com atendente':
+      msg = `Este menu ainda não foi implementado. Selecione outra opção.`;
+      response.push(msg);
+      break;
+
+    case 'Finalizar o atendimento':
+      await service.remove();
+      msg = 'Atendimento finalizado. Obrigado pelo contato';
+      response.push(msg);
+      break;
+
+    default:
+      msg = 'Opção inválida';
+      response.push(msg);
+      break;
+  }
+
+  return response;
 }
 
 exports.execute = execute;

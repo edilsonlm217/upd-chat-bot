@@ -11,4 +11,8 @@ export default {
     descricao: "Ler resposta do usuário",
     obj: require("./stage2"),
   },
+  3: {
+    descricao: "Ler resposta do usuário",
+    obj: require("./stage3"),
+  },
 };
