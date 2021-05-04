@@ -22,7 +22,7 @@ export default new function Chatbot() {
       client.onMessage(async message => {
         if (message.isGroupMsg === false) {
           ConnectionResolver.switchDatabase(sessionName);
-          const stage = await getStage(message);
+          const stage = await getStage(message, sessionName);
 
           try {
             const resp = await stages[stage].obj.execute(message);
@@ -47,7 +47,7 @@ export default new function Chatbot() {
 
   }
 
-  async function getStage(message) {
+  async function getStage(message, sessionName) {
     try {
       const { sender } = message;
       const [senderId,] = sender.id.split('@c.us');
@@ -70,9 +70,8 @@ export default new function Chatbot() {
 
       // Inicia um novo atendimento
       const newService = await InService.create({
-        // TODO: Criar um número de protocolo significativo
-        protocolNumber: '12456489712345',
         senderId,
+        sessionName,
         lastMessageReceivedAt: new Date(),
       });
 
