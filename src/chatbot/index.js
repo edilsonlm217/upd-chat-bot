@@ -1,6 +1,5 @@
 const bot = require('venom-bot');
 import { differenceInMinutes } from 'date-fns';
-import ConnectionResolver from '../services/ConnectionResolver';
 import fs from 'fs';
 
 import Tenant from '../app/schema/Tenant';
@@ -9,7 +8,20 @@ import InService from '../app/schema/InService';
 import stages from './stages/index';
 
 export default new function Chatbot() {
+  const middlewares = {};
+
   function constructor() { }
+
+  function use(funcName, func) {
+    middlewares[funcName] = func;
+  }
+
+  async function runMiddlewares(sessionName) {
+    Object.entries(middlewares).map(middleware => {
+      const run = middleware[1];
+      run(sessionName);
+    });
+  }
 
   async function listenMessages(sessionName) {
     try {
@@ -21,7 +33,7 @@ export default new function Chatbot() {
 
       client.onMessage(async message => {
         if (message.isGroupMsg === false) {
-          ConnectionResolver.switchDatabase(sessionName);
+          runMiddlewares(sessionName);
           const stage = await getStage(message, sessionName);
 
           try {
@@ -110,10 +122,10 @@ export default new function Chatbot() {
   }
 
   const ChatbotPrototype = {
-    init: () => {
-      reload();
-    },
-    listenMessages: (sessionName) => { listenMessages(sessionName) }
+    middlewares: middlewares,
+    init: () => { reload() },
+    listenMessages: (sessionName) => { listenMessages(sessionName) },
+    use: (funcName, func) => { use(funcName, func) }
   }
 
   constructor.prototype = ChatbotPrototype;
