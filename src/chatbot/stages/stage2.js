@@ -27,7 +27,7 @@ async function handleResponse(message, serviceType) {
       }
 
       return response;
-      
+
     case 'detached':
       response = detachedResponses[message.body];
 
@@ -63,12 +63,15 @@ async function goNextStage(service) {
 async function execute(message) {
   const { service, serviceType } = await getServiceType(message);
   const selectedOption = await handleResponse(message, serviceType);
-  
+
   var response = [];
   var msg = null;
 
   switch (selectedOption) {
     case 'Financeiro':
+      service.menuStage = selectedOption;
+      await service.save();
+
       msg = `*MenuFinanceiro*
         1. Segunda via de fatura
         2. Desbloqueio de confiança
@@ -83,6 +86,9 @@ async function execute(message) {
       break;
 
     case 'Suporte tecnico':
+      service.menuStage = selectedOption;
+      await service.save();
+
       msg = `*MenuSuporte*
         1. Sem internet
         2. Internet lenta
