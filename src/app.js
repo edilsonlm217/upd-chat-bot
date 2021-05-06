@@ -4,8 +4,10 @@ import http from 'http';
 import routes from './routes';
 
 import Mongo from './database';
+import TenancyDatabase from './chatbot/database';
+
 import Chatbot from './chatbot';
-import ConnectionResolver from './services/ConnectionResolver';
+import DatabaseMiddleware from './chatbot/middlewares/database';
 
 class App {
   constructor() {
@@ -34,10 +36,11 @@ class App {
 
   async bot() {
     await Chatbot.init();
+    await Chatbot.use('DatabaseMiddleware', DatabaseMiddleware);
   }
 
   async tenats() {
-    await ConnectionResolver.init();
+    await TenancyDatabase.start();
   }
 }
 
