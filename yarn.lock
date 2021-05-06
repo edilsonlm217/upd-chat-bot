@@ -40,9 +40,9 @@
     "@types/node" "*"
 
 "@types/node@*":
-  version "15.0.1"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-15.0.1.tgz#ef34dea0881028d11398be5bf4e856743e3dc35a"
-  integrity sha512-TMkXt0Ck1y0KKsGr9gJtWGjttxlZnnvDtphxUOSd0bfaR6Q1jle+sPvrzNR1urqYTWMinoKvjKfXUGsumaO1PA==
+  version "15.0.2"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-15.0.2.tgz#51e9c0920d1b45936ea04341aa3e2e58d339fb67"
+  integrity sha512-p68+a+KoxpoB47015IeYZYRrdqMUcpbK8re/zpFB8Ld46LHC1lPEbp3EXgkEhAYEcPvjJF6ZO+869SQ0aH1dcA==
 
 "@types/node@^14.14.28":
   version "14.14.43"
@@ -1347,9 +1347,9 @@ mariadb@^2.5.3:
     please-upgrade-node "^3.2.0"
 
 marky@^1.2.0:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/marky/-/marky-1.2.1.tgz#a3fcf82ffd357756b8b8affec9fdbf3a30dc1b02"
-  integrity sha512-md9k+Gxa3qLH6sUKpeC2CNkJK/Ld+bEz5X96nYwloqphQE0CKCVEKco/6jxEZixinqNdz5RFi/KaCyfbMDMAXQ==
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/marky/-/marky-1.2.2.tgz#4456765b4de307a13d263a69b0c79bf226e68323"
+  integrity sha512-k1dB2HNeaNyORco8ulVEhctyEGkKHb2YWAhDsxeFlW2nROIirsctBYzKwwS3Vza+sKTS1zO4Z+n9/+9WbGLIxQ==
 
 media-typer@0.3.0:
   version "0.3.0"
@@ -1826,7 +1826,7 @@ pupa@^2.0.1:
   dependencies:
     escape-goat "^2.0.0"
 
-puppeteer-extra-plugin-stealth@^2.7.6:
+puppeteer-extra-plugin-stealth@^2.7.8:
   version "2.7.8"
   resolved "https://registry.yarnpkg.com/puppeteer-extra-plugin-stealth/-/puppeteer-extra-plugin-stealth-2.7.8.tgz#7424c955e25351a55024734477059c988647047c"
   integrity sha512-Zhm/WY/BAk9VGdZR5OVpiwfGn2NoAzEb0hdu3/PGRryfenn8Dtoai8aUa8GzFPExWL+yGPsztswupH+3TV3M2A==
@@ -2513,9 +2513,9 @@ vary@^1, vary@~1.1.2:
   integrity sha1-IpnwLG3tMNSllhsLn3RSShj2NPw=
 
 venom-bot@^3.0.15:
-  version "3.0.15"
-  resolved "https://registry.yarnpkg.com/venom-bot/-/venom-bot-3.0.15.tgz#cd4d8abc1eea351516b6ea733dcd7ff972da9881"
-  integrity sha512-q5aexVhUIrRsq2nv17geo0l9TY714EGIYuAIxRhZtPSiFEczArTNhvCWXChvAnyzN81EAmD/1akl2JQJJ4qThg==
+  version "3.0.16"
+  resolved "https://registry.yarnpkg.com/venom-bot/-/venom-bot-3.0.16.tgz#f6c0fb49bf3f62bd95d8e2f09cae14aa4ff35263"
+  integrity sha512-YUGDFM1sMvj6T7F2vmR1hnXezZ1GFYMgvEkjRaVyvpjA4Q3ShCqDlsPH2ga1SywhWTMfZ5Hkp8GVFspoZu3/ww==
   dependencies:
     atob "^2.1.2"
     axios "^0.21.0"
@@ -2528,7 +2528,7 @@ venom-bot@^3.0.15:
     ora "^5.4.0"
     puppeteer "^5.5.0"
     puppeteer-extra "^3.1.18"
-    puppeteer-extra-plugin-stealth "^2.7.6"
+    puppeteer-extra-plugin-stealth "^2.7.8"
     qrcode-terminal "^0.12.0"
     sharp "^0.28.1"
     spinnies "^0.5.1"
