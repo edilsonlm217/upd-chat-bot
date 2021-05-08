@@ -4,7 +4,7 @@ const InServiceSchema = new mongoose.Schema(
   {
     sessionName: {
       type: String,
-      required: true,
+      required: false,
     },
     protocolNumber: {
       type: String,
@@ -20,7 +20,7 @@ const InServiceSchema = new mongoose.Schema(
     },
     lastMessageReceivedAt: {
       type: Date,
-      required: true,
+      required: false,
     },
     ageInMinutes: {
       type: Number,
