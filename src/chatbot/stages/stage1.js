@@ -50,14 +50,7 @@ async function execute(message) {
 
       const [firstName] = client.nome.split(' ');
 
-      msg = `Ola ${firstName}
-        Para qual desses assuntos deseja atendimento:
-        1. Financeiro
-        2. Suporte tecnico
-        3. Canais de atendimento
-        4. Nossos planos
-        5. Falar com atendente
-        #. Finalizar o atendimento
+      msg = `Para qual desses assuntos deseja atendimento:\n1. Financeiro\n3. Canais de atendimento\n4. Nossos planos\n5. Falar com atendente\n#. Finalizar o atendimento
       `;
 
       response.push(msg);
