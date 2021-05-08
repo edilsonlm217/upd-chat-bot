@@ -33,10 +33,7 @@ async function execute(message) {
     await goNextStage(message);
 
     return [
-      `${time}. Seja bem vindo(a)!
-    Aqui é a assistente virtual da Updata.
-    
-    Digite *[1] para atendimento avulso* ou *informe CPF ou CNPJ* caso seja assinante de nossos serviços`,
+      `${time}.\nPra começar informe seu CPF ou CNPJ.\nSe ainda não é cliente digite [1]`,
     ];
   } catch (error) {
     console.log('[LOG]: Failed to execute stage 0');
