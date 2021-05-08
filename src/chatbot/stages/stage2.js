@@ -75,8 +75,7 @@ async function execute(message) {
       msg = `*MenuFinanceiro*
         1. Segunda via de fatura
         2. Desbloqueio de confiança
-        3. Cancelamento
-        4. Falar com atendente
+        *. Falar com atendente
         0. Menu principal
         #. Finalizar atendimento
       `;
@@ -92,9 +91,8 @@ async function execute(message) {
       msg = `*MenuSuporte*
         1. Sem internet
         2. Internet lenta
-        3. Senha do wifi
-        4. Consultar chamado
-        5. Falar com atendente
+        3. Consultar chamado
+        *. Falar com atendente
         0. Menu principal
         #. Finalizar atendimento
       `;
