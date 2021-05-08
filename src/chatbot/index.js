@@ -9,6 +9,7 @@ import stages from './stages/index';
 
 export default new function Chatbot() {
   const middlewares = {};
+  const sessions = {};
 
   function constructor() { }
 
@@ -26,10 +27,12 @@ export default new function Chatbot() {
   async function listenMessages(sessionName) {
     try {
       const client = await bot.create(sessionName, undefined, undefined, {
-        logQR: false,
+        logQR: true,
         disableWelcome: true,
         autoClose: 30000,
       });
+
+      sessions[sessionName] = client;
 
       client.onMessage(async message => {
         if (message.isGroupMsg === false) {
@@ -122,6 +125,7 @@ export default new function Chatbot() {
   }
 
   const ChatbotPrototype = {
+    sessions: sessions,
     middlewares: middlewares,
     init: () => { reload() },
     listenMessages: (sessionName) => { listenMessages(sessionName) },
