@@ -163,6 +163,17 @@ export default new function Chatbot() {
               return;
             }
 
+            if (message.body == '0') {
+              // Voltar
+              atendimento.area = 'client_area';
+              atendimento.action = 'handleResponse';
+              atendimento.isClient = true;
+              atendimento.controle = 'client';
+
+              client.sendText(message.from, 'Para qual desses assuntos deseja atendimento:\n\n1. Financeiro\n2. Suporte\n');
+              return;
+            }
+
             // Opção inválida
             client.sendText(message.from, 'Opção inválida');
             return;
