@@ -111,7 +111,8 @@ export default new function Chatbot() {
                 atendimento.isClient = true;
                 atendimento.controle = 'client.suporte';
 
-                client.sendText(message.from, '*Suporte*\n1. Sem internet\n2. Internet lenta\n 3. Consultar chamado');
+                await client.sendText(message.from, '*Suporte*\n1. Sem internet\n2. Internet lenta\n3. Consultar chamado');
+                await client.sendText(message.from, '0. Voltar');
 
                 atendimentos[message.from] = atendimento;
                 console.log(atendimentos[message.from]);
@@ -197,6 +198,17 @@ export default new function Chatbot() {
             if (message.body == '3') {
               // Consultar chamado
               client.sendText(message.from, 'Verificamos que não há chamado aberto para você');
+              return;
+            }
+
+            if (message.body == '0') {
+              // Voltar
+              atendimento.area = 'client_area';
+              atendimento.action = 'handleResponse';
+              atendimento.isClient = true;
+              atendimento.controle = 'client';
+
+              client.sendText(message.from, 'Para qual desses assuntos deseja atendimento:\n\n1. Financeiro\n2. Suporte\n');
               return;
             }
 
