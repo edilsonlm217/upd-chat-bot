@@ -5,8 +5,6 @@ import fs from 'fs';
 import Tenant from '../app/schema/Tenant';
 import InService from '../app/schema/InService';
 
-import stages from './stages/index';
-
 export default new function Chatbot() {
   const middlewares = {};
   const sessions = {};
@@ -36,11 +34,12 @@ export default new function Chatbot() {
       sessions[sessionName] = client;
 
       client.onMessage(async message => {
+        await runMiddlewares();
+
         if (message.from === '559236483445@c.us') {
           var atendimento = atendimentos[message.from];
-          console.log(atendimento ? atendimento : 'Iniciando novo atendimento');
 
-          // area: identification
+          // area: welcome
           if (!atendimento) {
             client.sendText(message.from, 'Bem vindo!\nPra começar informe seu CPF ou CNPJ.\nSe ainda não é cliente digite [1]');
 
@@ -57,8 +56,12 @@ export default new function Chatbot() {
           // area: identification
           // action: handleResponse
           if (atendimento.area === 'identification' && atendimento.action === 'handleResponse') {
-            // Verifica se resposta contém um CPF/CNPJ
-            if (message.body.length === 11 || message.body.length === 14) {
+            // Verifica se resposta contém um CPF/CNPJ válido
+            const regex = /([0-9]{2}[\.]?[0-9]{3}[\.]?[0-9]{3}[\/]?[0-9]{4}[-]?[0-9]{2})|([0-9]{3}[\.]?[0-9]{3}[\.]?[0-9]{3}[-]?[0-9]{2})/;
+
+            const isValidCPFCNPJ = regex.test(message.body);
+
+            if (isValidCPFCNPJ) {
               atendimento.area = 'client_area';
               atendimento.action = 'handleResponse';
               atendimento.isClient = true;
@@ -238,7 +241,6 @@ export default new function Chatbot() {
               client.sendText(message.from, 'Atendimento finalizado');
             }
           }
-
 
           // Não deu match com nenhuma opção
           console.log('Não entrei em nada');
