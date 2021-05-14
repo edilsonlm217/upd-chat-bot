@@ -1,18 +1,22 @@
-export default {
-  0: {
-    descricao: "Estágio de boas vindas",
-    obj: require("./stage0"),
+import WelcomeStage from './WelcomeStage/index';
+import IdentificationStage from './IdentificationStage/index';
+
+exports.stages = {
+  "welcome": {
+    execute: async (attndnce, message) => await WelcomeStage(attndnce, message),
+    description: 'Welcome message'
   },
-  1: {
-    descricao: "Estágio de apresentação de menus",
-    obj: require("./stage1"),
+  "identification": {
+    execute: async (attndnce, message) => await IdentificationStage(attndnce, message),
+    description: 'Identify whether the contact is a customer and present the menu equivalent to the response',
   },
-  2: {
-    descricao: "Ler resposta do usuário",
-    obj: require("./stage2"),
+  "non_client": {
+    execute: () => { return 'non_client' }
   },
-  3: {
-    descricao: "Ler resposta do usuário",
-    obj: require("./stage3"),
+  "selecting_area_as_client": {
+    execute: () => { return 'selecting_area_as_client' }
   },
-};
+  "non_client_1": {
+    execute: () => { return 'non_client_1' }
+  },
+}
