@@ -15,7 +15,7 @@ exports.stages = {
   },
   "selecting_area_as_client": {
     execute: async (attndnce, message) => await SelectAreaAsClient(attndnce, message),
-    description: 'Internship for ISP customers only. Identifies which menu the user is trying to access',
+    description: 'Stage for ISP customers only. Identifies which menu the user is trying to access',
   },
   "non_client": {
     execute: async (attndnce, message) => await NonClientStage(attndnce, message),
