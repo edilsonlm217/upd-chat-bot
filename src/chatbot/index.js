@@ -41,9 +41,9 @@ export default new function Chatbot() {
           const attndnce = await getAttendance(message, sessionName);
           const response = await stages[attndnce.stage].execute(attndnce, message);
 
-          response.map(async msg => {
+          for (let msg of response) {
             await client.sendText(message.from, msg);
-          });
+          }
         }
       });
     } catch (error) {
