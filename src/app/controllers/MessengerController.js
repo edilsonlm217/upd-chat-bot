@@ -3,7 +3,13 @@ import { charset, fixAccentuation } from '../../utils';
 
 class MessengerController {
   async store(req, res) {
-    const { number, message: msg } = req.body;
+    const { number, message } = req.body;
+
+    var msg = message;
+
+    do {
+      var msg = msg.replace("{linebreak}", "\n");
+    } while (msg.includes("{linebreak}"));
 
     var formattedString = msg;
 
