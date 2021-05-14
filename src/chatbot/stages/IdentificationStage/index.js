@@ -38,7 +38,7 @@ export default async function IdentificationStage(attndnce, message) {
 
     return ['Opção inválida'];
   } catch (error) {
-    console.log('Failed @ IdentificationStage');
+    console.log('[LOG]: Failed @ IdentificationStage');
     console.log(error);
   }
 }
