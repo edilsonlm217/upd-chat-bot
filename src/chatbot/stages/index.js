@@ -3,6 +3,7 @@ import IdentificationStage from './IdentificationStage/index';
 import SelectAreaAsClient from './SelectAreaAsClient/index';
 import CompletionStage from './CompletionStage/index';
 import NonClientStage from './NonClientStage/index';
+import FinancialStage from './FinancialStage/index';
 
 exports.stages = {
   "welcome": {
@@ -16,6 +17,10 @@ exports.stages = {
   "selecting_area_as_client": {
     execute: async (attndnce, message) => await SelectAreaAsClient(attndnce, message),
     description: 'Stage for ISP customers only. Identifies which menu the user is trying to access',
+  },
+  "financial": {
+    execute: async (attndnce, message) => await FinancialStage(attndnce, message),
+    description: 'Responsible for validating if the user wants to do anything or finish the service',
   },
   "non_client": {
     execute: async (attndnce, message) => await NonClientStage(attndnce, message),
