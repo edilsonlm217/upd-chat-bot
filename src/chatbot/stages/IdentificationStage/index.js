@@ -23,8 +23,8 @@ export default async function IdentificationStage(attndnce, message) {
         await attndnce.save();
 
         return [
-          'Informe outro CPF ou CNPJ para começarmos.\n\nSe ainda não é cliente digite[1].',
-          'Não há nenhuma assinatura para este CPF em nosso sistema.'
+          'Não há nenhuma assinatura para este CPF em nosso sistema',
+          'Informe outro CPF ou CNPJ para começarmos.\n\nSe ainda não é cliente digite[1].'
         ];
       }
 
