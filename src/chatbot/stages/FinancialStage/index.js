@@ -1,7 +1,9 @@
 import { Op } from 'sequelize';
-import { format } from 'date-fns';
-import { pt } from 'date-fns/locale'
+import { format, differenceInDays, startOfDay, addHours } from 'date-fns';
+import { pt } from 'date-fns/locale';
+
 import Invoice from '../../../app/models/Invoice';
+import Client from '../../../app/models/Client';
 
 export default async function FinancialStage(attndnce, message) {
   var response = null;
@@ -71,7 +73,46 @@ export default async function FinancialStage(attndnce, message) {
         break;
 
       case "2":
-        //
+
+        const client = await Client.findByPk(attndnce.client.id);
+
+        if (client.observacao === 'sim') {
+          attndnce.stage = 'completion';
+          await attndnce.save();
+
+          response = [
+            'Verifiquei que já foi realizado o desbloqueio de confiança recentemente.\nSeu serviço será restabelecido após a confirmação do pagamento pela instituição bancária.',
+            'Precisa de mais alguma coisa?\n0. Voltar menu principal\n#. Finalizar atendimento'
+          ];
+
+          break;
+        }
+
+        if (differenceInDays(new Date(), client.rem_obs) <= 30) {
+          attndnce.stage = 'completion';
+          await attndnce.save();
+
+          response = [
+            'Verifiquei que já foi realizado o desbloqueio de confiança recentemente.\nSeu serviço será restabelecido após a confirmação do pagamento pela instituição bancária.',
+            'Precisa de mais alguma coisa?\n0. Voltar menu principal\n#. Finalizar atendimento'
+          ];
+
+          break;
+        }
+
+        // Colocando cliente em observação
+        client.observacao = 'sim';
+        client.rem_obs = addHours(startOfDay(new Date()), 72);
+        await client.save();
+
+        attndnce.stage = 'completion';
+        await attndnce.save();
+
+        response = [
+          'Acabei de desbloquear sua internet.\nCaso o pagamento não seja confirmado no prazo de 72h o serviço será bloqueado novamente',
+          'Precisa de mais alguma coisa?\n0. Voltar menu principal\n#. Finalizar atendimento'
+        ];
+
         break;
 
       case "0":
