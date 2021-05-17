@@ -18,6 +18,8 @@ export default async function CompletionStage(attndnce, message) {
       default:
         break;
     }
+
+    return response;
   } catch (error) {
     console.log('[LOG]: Failed @ CompletionStage');
     console.log(error);
