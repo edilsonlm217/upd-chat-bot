@@ -4,6 +4,7 @@ import SelectAreaAsClient from './SelectAreaAsClient/index';
 import CompletionStage from './CompletionStage/index';
 import NonClientStage from './NonClientStage/index';
 import FinancialStage from './FinancialStage/index';
+import SupportStage from './SupportStage/index';
 
 exports.stages = {
   "welcome": {
@@ -20,7 +21,11 @@ exports.stages = {
   },
   "financial": {
     execute: async (attndnce, message) => await FinancialStage(attndnce, message),
-    description: 'Responsible for validating if the user wants to do anything or finish the service',
+    description: 'Responsible for executing "trust unlock" logic',
+  },
+  "support": {
+    execute: async (attndnce, message) => await SupportStage(attndnce, message),
+    description: '',
   },
   "non_client": {
     execute: async (attndnce, message) => await NonClientStage(attndnce, message),
