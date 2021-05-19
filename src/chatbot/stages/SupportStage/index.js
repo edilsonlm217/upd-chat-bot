@@ -1,5 +1,9 @@
+import { differenceInDays, startOfDay, addHours, format } from 'date-fns';
+import { v4 as uuidv4 } from 'uuid';
+
 import Client from '../../../app/models/Client';
 import OnlineUsers from '../../../app/models/OnlineUsers';
+import SupportRequest from '../../../app/models/SupportRequest';
 
 export default async function SupportStage(attndnce, message) {
   var response = null;
@@ -7,33 +11,59 @@ export default async function SupportStage(attndnce, message) {
   try {
     switch (message.body) {
       case "1":
+        const client = await Client.findByPk(attndnce.client.id);
         const isOnline = await OnlineUsers.findByPk(attndnce.client.id);
 
         // Verifica se o client está online
         if (!isOnline) {
           //TODO: Abrir chamado
+          const requestNumber = format(new Date(), 'ddMMyyhhmmssSS');
+          const requestVisit = addHours(new Date(), 72);
+
+          const request = await SupportRequest.create({
+            uuid_suporte: uuidv4(),
+            assunto: 'Outros',
+            abertura: format(new Date(), 'yyyy-MM-dd hh:mm:ss'),
+            fechamento: null,
+            email: client.email,
+            status: 'aberto',
+            chamado: requestNumber,
+            nome: client.nome,
+            login: client.login,
+            atendente: 'chatbot',
+            visita: format(requestVisit, 'yyyy-MM-dd hh:mm:ss'),
+            prioridade: 'normal',
+            ramal: 'todos',
+            reply: 'nao',
+            tecnico: null,
+            login_atend: 'full_users',
+            motivo_fechar: null,
+          });
 
           attndnce.stage = 'completion';
           await attndnce.save();
 
           response = [
             'Realmente parece haver um problema com sua conexão.',
-            'Neste caso, abri um chamado para um especialista verificar o seu problema.\nSegue número do protocolo: 12312312321',
+            `Neste caso, abri um chamado para um especialista verificar o seu problema.\nSegue número do protocolo: ${request.chamado}`,
             'Precisa de mais alguma coisa?\n0. Voltar\n#.Finalizar atendimento'
           ];
+
+          break;
         }
 
         // Verifica se o client está bloqueado
-        const client = await Client.findByPk(attndnce.client.id);
-        const { bloqueado } = client;
+        const { bloqueado: isBlocked } = client;
 
-        if (bloqueado === 'nao') {
+        if (isBlocked === 'nao') {
           attndnce.stage = 'support_1_1';
           await attndnce.save();
 
           response = [
             'Verifiquei que sua conexão está online e aparentemente normal.\nSugiro que desligue o roteador, aguarde 1 minuto e ligue novamente\n\nApós realizar o procedimento acima, seu problema foi resolvido?\n\n1. Sim\n2.Não',
           ];
+
+          break;
         }
 
         // Verificar se cliente está apto a desbloqueio de segurança em duas etapas
