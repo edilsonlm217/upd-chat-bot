@@ -16,7 +16,6 @@ export default async function SupportStage(attndnce, message) {
 
         // Verifica se o client está online
         if (!isOnline) {
-          //TODO: Abrir chamado
           const requestNumber = format(new Date(), 'ddMMyyhhmmssSS');
           const requestVisit = addHours(new Date(), 72);
 
