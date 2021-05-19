@@ -1,17 +1,20 @@
-import { differenceInDays, startOfDay, addHours, format } from 'date-fns';
+import { differenceInDays, startOfDay, addHours, format, isSameDay } from 'date-fns';
+import { Op } from 'sequelize';
 import { v4 as uuidv4 } from 'uuid';
 
 import Client from '../../../app/models/Client';
 import OnlineUsers from '../../../app/models/OnlineUsers';
 import SupportRequest from '../../../app/models/SupportRequest';
+import Invoice from '../../../app/models/Invoice';
 
 export default async function SupportStage(attndnce, message) {
   var response = null;
 
   try {
+    const client = await Client.findByPk(attndnce.client.id);
+
     switch (message.body) {
       case "1":
-        const client = await Client.findByPk(attndnce.client.id);
         const isOnline = await OnlineUsers.findByPk(attndnce.client.id);
 
         // Verifica se o client está online
@@ -80,16 +83,23 @@ export default async function SupportStage(attndnce, message) {
         }
 
         // Etapa_2: Verificar se cliente já usou bloqueio de confiança nos últimos 30 dias
-        if (differenceInDays(new Date(), client.rem_obs) <= 30) {
-          attndnce.stage = 'completion';
-          await attndnce.save();
+        const timeZoneOffset = new Date().getTimezoneOffset() / 60;
+        const today = subHours(startOfDay(new Date()), timeZoneOffset);
 
-          response = [
-            'Verifiquei que já foi realizado o desbloqueio de confiança recentemente.\nSeu serviço será restabelecido após a confirmação do pagamento pela instituição bancária.',
-            'Precisa de mais alguma coisa?\n0. Voltar menu principal\n#. Finalizar atendimento'
-          ];
+        const isSameDay_ = isSameDay(today, client.rem_obs);
 
-          break;
+        if (!isSameDay_) {
+          if (differenceInDays(today, client.rem_obs) <= 30) {
+            attndnce.stage = 'completion';
+            await attndnce.save();
+
+            response = [
+              'Verifiquei que já foi realizado o desbloqueio de confiança recentemente.\nSeu serviço será restabelecido após a confirmação do pagamento pela instituição bancária.',
+              'Precisa de mais alguma coisa?\n0. Voltar menu principal\n#. Finalizar atendimento'
+            ];
+
+            break;
+          }
         }
 
         // Colocando cliente em observação
@@ -109,14 +119,26 @@ export default async function SupportStage(attndnce, message) {
         break;
 
       case "2":
-        const client = await Client.findByPk(attndnce.client.id);
-
         if (client.status_corte === 'down') {
+          const { login } = attndnce.client;
+
+          // Recupera fatura vencida
+          const pendingInvoice = await Invoice.findOne({
+            where: {
+              login: login,
+              status: 'vencido',
+              deltitulo: {
+                [Op.eq]: false,
+              },
+            },
+          });
+
           attndnce.stage = 'completion';
           await attndnce.save();
 
           response = [
             'Verifiquei que seu serviço está reduzido devido a uma fatura vencida a mais de 15 dias.\nPara restabelecer sua velocidade, efetue pagamento o quanto antes',
+            `Para efetuar o pagamento agora, utilize a linha digitavel abaixo:\n${pendingInvoice.linhadig}`,
             'Precisa de mais alguma coisa?\n0. Voltar menu principal\n#. Finalizar atendimento',
           ];
 
