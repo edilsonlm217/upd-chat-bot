@@ -1,5 +1,5 @@
 import { Op } from 'sequelize';
-import { format, differenceInDays, startOfDay, addHours } from 'date-fns';
+import { format, differenceInDays, startOfDay, addHours, isSameDay, subHours } from 'date-fns';
 import { pt } from 'date-fns/locale';
 
 import Invoice from '../../../app/models/Invoice';
@@ -88,16 +88,23 @@ export default async function FinancialStage(attndnce, message) {
           break;
         }
 
-        if (differenceInDays(new Date(), client.rem_obs) <= 30) {
-          attndnce.stage = 'completion';
-          await attndnce.save();
+        const timeZoneOffset = new Date().getTimezoneOffset() / 60;
+        const today = subHours(startOfDay(new Date()), timeZoneOffset);
 
-          response = [
-            'Verifiquei que já foi realizado o desbloqueio de confiança recentemente.\nSeu serviço será restabelecido após a confirmação do pagamento pela instituição bancária.',
-            'Precisa de mais alguma coisa?\n0. Voltar menu principal\n#. Finalizar atendimento'
-          ];
+        const isSameDay_ = isSameDay(today, client.rem_obs);
 
-          break;
+        if (!isSameDay_) {
+          if (differenceInDays(today, client.rem_obs) <= 30) {
+            attndnce.stage = 'completion';
+            await attndnce.save();
+
+            response = [
+              'Verifiquei que já foi realizado o desbloqueio de confiança recentemente.\nSeu serviço será restabelecido após a confirmação do pagamento pela instituição bancária.',
+              'Precisa de mais alguma coisa?\n0. Voltar menu principal\n#. Finalizar atendimento'
+            ];
+
+            break;
+          }
         }
 
         // Colocando cliente em observação
