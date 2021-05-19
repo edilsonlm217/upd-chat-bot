@@ -1,4 +1,5 @@
 import WelcomeStage from './WelcomeStage/index';
+import ProcedureCheckStage from './ProcedureCheckStage/index';
 import IdentificationStage from './IdentificationStage/index';
 import SelectAreaAsClient from './SelectAreaAsClient/index';
 import CompletionStage from './CompletionStage/index';
@@ -25,6 +26,10 @@ exports.stages = {
   },
   "support": {
     execute: async (attndnce, message) => await SupportStage(attndnce, message),
+    description: '',
+  },
+  "procedure_check": {
+    execute: async (attndnce, message) => await ProcedureCheckStage(attndnce, message),
     description: '',
   },
   "non_client": {
