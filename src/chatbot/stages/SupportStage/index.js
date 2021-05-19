@@ -55,7 +55,7 @@ export default async function SupportStage(attndnce, message) {
         const { bloqueado: isBlocked } = client;
 
         if (isBlocked === 'nao') {
-          attndnce.stage = 'support_1_1';
+          attndnce.stage = 'procedure_check';
           await attndnce.save();
 
           response = [
@@ -109,7 +109,27 @@ export default async function SupportStage(attndnce, message) {
         break;
 
       case "2":
-        //
+        const client = await Client.findByPk(attndnce.client.id);
+
+        if (client.status_corte === 'down') {
+          attndnce.stage = 'completion';
+          await attndnce.save();
+
+          response = [
+            'Verifiquei que seu serviço está reduzido devido a uma fatura vencida a mais de 15 dias.\nPara restabelecer sua velocidade, efetue pagamento o quanto antes',
+            'Precisa de mais alguma coisa?\n0. Voltar menu principal\n#. Finalizar atendimento',
+          ];
+
+          break;
+        }
+
+        attndnce.stage = 'procedure_check';
+        await attndnce.save();
+
+        response = [
+          'Verifiquei que sua velocidade não está reduzida. Muitas vezes o problema de lentidão está relacionado com travamento do roteador.\n\nSugiro que desligue o roteador, aguarde 1 minuto e ligue novamente.\n\nApós realizar o procedimento acima, seu problema foi resolvido?\n\n1. Sim\n2. Não',
+        ];
+
         break;
 
       case "0":
