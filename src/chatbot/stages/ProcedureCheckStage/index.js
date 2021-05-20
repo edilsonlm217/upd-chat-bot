@@ -1,8 +1,7 @@
-import { differenceInDays, startOfDay, addHours, format } from 'date-fns';
+import { addHours, format } from 'date-fns';
 import { v4 as uuidv4 } from 'uuid';
 
 import Client from '../../../app/models/Client';
-import OnlineUsers from '../../../app/models/OnlineUsers';
 import SupportRequest from '../../../app/models/SupportRequest';
 
 export default async function ProcedureCheckStage(attndnce, message) {
