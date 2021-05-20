@@ -17,19 +17,6 @@ export default async function SelectAreaAsClient(attndnce, message) {
         response = ['*Suporte*\n1. Sem internet\n2. Internet lenta\n\nTecle [0] para voltar'];
         break;
 
-      case "3":
-        attndnce.stage = 'completion';
-        await attndnce.save();
-
-        response = [
-          'Precisa de mais alguma coisa?\n0. Voltar menu principal\n#. Finalizar atendimento',
-          'Um de nossos atendentes entrará em contato com você o mais breve possível'
-        ];
-        
-        // TODO: Notificar atendentes
-        // TODO: Remover atendimento da lista de atendimentos
-        break;
-
       default:
         response = ['Opção inválida']
         break;

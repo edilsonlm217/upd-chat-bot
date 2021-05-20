@@ -7,7 +7,10 @@ export default async function IdentificationStage(attndnce, message) {
     const isValidCPFCNPJ = regex.test(message.body);
 
     if (message.body === '1') {
-      return ['Para qual desses assuntos deseja atendimento:\n\n1. Conhecer planos\n2. Falar com atendente'];
+      attndnce.stage = 'non_client';
+      await attndnce.save();
+
+      return ['Para qual desses assuntos deseja atendimento:\n\n1. Conhecer planos'];
     }
 
     if (isValidCPFCNPJ) {
@@ -33,7 +36,7 @@ export default async function IdentificationStage(attndnce, message) {
       attndnce.client = client.dataValues;
       await attndnce.save();
 
-      return ['Para qual desses assuntos deseja atendimento:\n\n1. Financeiro\n2. Suporte\n3. Falar com atendente'];
+      return ['Para qual desses assuntos deseja atendimento:\n\n1. Financeiro\n2. Suporte'];
     }
 
     return ['Opção inválida'];

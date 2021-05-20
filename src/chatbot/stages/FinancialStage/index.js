@@ -126,7 +126,7 @@ export default async function FinancialStage(attndnce, message) {
         attndnce.stage = 'selecting_area_as_client';
         await attndnce.save();
 
-        response = ['Para qual desses assuntos deseja atendimento:\n\n1. Financeiro\n2. Suporte\n3. Falar com atendente'];
+        response = ['Para qual desses assuntos deseja atendimento:\n\n1. Financeiro\n2. Suporte'];
         break;
 
       default:
