@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { format } from 'date-fns';
 
 const AttendanceSchema = new mongoose.Schema(
   {
@@ -12,7 +13,7 @@ const AttendanceSchema = new mongoose.Schema(
     },
     protocolNumber: {
       type: String,
-      default: 12456489712345, // TODO: Criar um número de protocolo significativo
+      default: format(new Date(), 'ddMMyyhhmmssSS'),
     },
     stage: {
       type: String,
