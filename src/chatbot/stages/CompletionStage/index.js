@@ -11,8 +11,9 @@ export default async function CompletionStage(attndnce, message) {
         break;
 
       case "#":
+        await attndnce.remove();
+
         response = ['Atendimento finalizado!\nUpdata Telecom agradece!'];
-        // TODO: Remover atendimento da lista de atendimentos
         break;
 
       default:
