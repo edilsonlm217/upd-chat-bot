@@ -1,6 +1,5 @@
 import Chatbot from '../../chatbot';
 import pdf from 'html-pdf';
-// import Buffer from 'buffer';
 import iconv from 'iconv-lite';
 import request from 'request';
 import { charset, fixAccentuation } from '../../utils';
@@ -30,10 +29,8 @@ class MessengerController {
 
     request({ uri: html, encoding: null }, (error, response, body) => {
       const utf8String = iconv.decode(new Buffer(body), "ISO-8859-1");
-      console.log(utf8String);
-      pdf.create(utf8String).toFile('./tmp.pdf', async (err, res) => {
-        console.log(res.filename);
 
+      pdf.create(utf8String).toFile('./tmp.pdf', async (err, res) => {
         try {
           await Chatbot.sessions['updata'].sendText(
             `${number}@c.us`,
@@ -46,15 +43,12 @@ class MessengerController {
           );
         } catch (error) {
           console.log(error);
+          console.log('Failed @ MessengerController');
         }
       });
     });
 
     return res.json({ ok: true });
-
-    res.json({
-      message: formattedString,
-    });
   }
 }
 
