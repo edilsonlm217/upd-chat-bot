@@ -43,7 +43,7 @@ class MessengerController {
           );
         } catch (error) {
           console.log(error);
-          console.log('Failed @ MessengerController');
+          console.log('[LOG]: Failed @ MessengerController');
         }
       });
     });
