@@ -28,7 +28,7 @@ class MessengerController {
     const html = 'http://provedor.updata.com.br/boleto/20boleto.php?titulo=70559';
 
     request({ uri: html, encoding: null }, (error, response, body) => {
-      const utf8String = iconv.decode(new Buffer(body), "ISO-8859-1");
+      const utf8String = iconv.decode(new Buffer.from(body), "ISO-8859-1");
 
       pdf.create(utf8String).toFile('./tmp.pdf', async (err, res) => {
         try {
