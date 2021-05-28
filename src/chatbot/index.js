@@ -113,6 +113,7 @@ export default new function Chatbot() {
   }
 
   const ChatbotPrototype = {
+    runMiddlewares: () => { runMiddlewares(); },
     sessions: sessions,
     middlewares: middlewares,
     init: () => { reload() },
