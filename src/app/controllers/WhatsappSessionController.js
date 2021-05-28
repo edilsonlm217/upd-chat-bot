@@ -1,13 +1,16 @@
 import Tenant from '../schema/Tenant';
 import Chatbot from '../../chatbot';
+import Websocket from '../../services/websocket';
 
 const bot = require('venom-bot');
 
 class WhatsappSessionController {
   async create(req, res) {
-    try {
-      const { sessionName } = req.params;
+    const { sessionName, socketId } = req.params;
 
+    const socket = Websocket.connections[socketId];
+
+    try {
       const tenant = await Tenant.findOne({
         sessionName,
         isActive: true,
@@ -19,10 +22,14 @@ class WhatsappSessionController {
 
       const client = await bot.create(
         sessionName,
-        (base64Qr, asciiQR, attempts, urlCode) => { console.log('haahha'); },
+        (base64Qr, asciiQR, attempts, urlCode) => {
+          socket.emit('qrcode', {
+            qrcode: base64Qr,
+          });
+        },
         undefined,
         {
-          logQR: true,
+          logQR: false,
           disableWelcome: true,
           autoClose: 30000,
         }
@@ -31,7 +38,7 @@ class WhatsappSessionController {
       Chatbot.sessions[sessionName] = client;
 
       client.onMessage(async message => {
-        await runMiddlewares(sessionName);
+        await Chatbot.runMiddlewares(sessionName);
 
         if (message.from === '559236483445@c.us') {
           const attndnce = await getAttendance(message, sessionName);
