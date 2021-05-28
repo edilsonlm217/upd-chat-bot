@@ -5,6 +5,7 @@ import routes from './routes';
 
 import Mongo from './database';
 import TenancyDatabase from './chatbot/database';
+import Websocket from './services/websocket';
 
 import Chatbot from './chatbot';
 import DatabaseMiddleware from './chatbot/middlewares/database';
@@ -18,6 +19,7 @@ class App {
     this.routes();
     this.mongo();
     this.tenats();
+    this.socket();
   }
 
   middlewares() {
@@ -29,14 +31,18 @@ class App {
     this.app.use(routes);
   }
 
+  socket() {
+    Websocket.init(this.server);
+  }
+
   async mongo() {
     await Mongo.start();
     this.bot();
   }
 
   async bot() {
-    await Chatbot.init();
-    await Chatbot.use('DatabaseMiddleware', DatabaseMiddleware);
+    // await Chatbot.init();
+    // await Chatbot.use('DatabaseMiddleware', DatabaseMiddleware);
   }
 
   async tenats() {
