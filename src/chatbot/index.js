@@ -1,5 +1,6 @@
 const bot = require('venom-bot');
 import { differenceInMinutes } from 'date-fns';
+import { promisify } from 'util';
 import fs from 'fs';
 
 import Tenant from '../app/schema/Tenant';
@@ -7,51 +8,31 @@ import Attendance from '../app/schema/Attendance';
 
 import { stages } from './stages/index';
 
+const readDirAsync = promisify(fs.readdir);
+
 export default new function Chatbot() {
+  const onlineSessions = {};
   const middlewares = {};
-  const sessions = {};
 
   function constructor() { }
+
+  async function getPreExistingTokens() {
+    const tokens = await readDirAsync('./tokens');
+    return tokens;
+  }
+
+  async function runMiddlewares(tenantCnpj) {
+    Object.entries(middlewares).map(middleware => {
+      const run = middleware[1];
+      run(tenantCnpj);
+    });
+  }
 
   function use(funcName, func) {
     middlewares[funcName] = func;
   }
 
-  async function runMiddlewares(sessionName) {
-    Object.entries(middlewares).map(middleware => {
-      const run = middleware[1];
-      run(sessionName);
-    });
-  }
-
-  async function listenMessages(sessionName) {
-    try {
-      const client = await bot.create(sessionName, undefined, undefined, {
-        logQR: true,
-        disableWelcome: true,
-        autoClose: 30000,
-      });
-
-      sessions[sessionName] = client;
-
-      client.onMessage(async message => {
-        await runMiddlewares(sessionName);
-
-        if (message.from === '559236483445@c.us') {
-          const attndnce = await getAttendance(message, sessionName);
-          const response = await stages[attndnce.stage].execute(attndnce, message);
-
-          for (let msg of response) {
-            await client.sendText(message.from, msg);
-          }
-        }
-      });
-    } catch (error) {
-      console.log('[LOG]: Failed to listen to messages');
-    }
-  }
-
-  async function getAttendance(message, sessionName) {
+  async function getAttendance(message, tenantCnpj) {
     try {
       const { sender } = message;
 
@@ -74,7 +55,7 @@ export default new function Chatbot() {
       // Inicia um novo atendimento
       const newAttendance = await Attendance.create({
         senderId: sender.id,
-        sessionName,
+        sessionName: tenantCnpj,
         lastMessageReceivedAt: new Date(),
       });
 
@@ -84,41 +65,124 @@ export default new function Chatbot() {
     }
   }
 
-  async function reload() {
+  async function initTenantBot(tenantCnpj) {
+    /*
+      TODO Add comments for describing this method rsposibility
+    */
+
+    const session = onlineSessions[tenantCnpj];
+
+    if (session) {
+      return {
+        error: {
+          message: 'This tenant already has an active session',
+        }
+      };
+    }
+
+    const tenant = await Tenant.findOne({
+      cnpj: tenantCnpj
+    });
+
+    if (!tenant) {
+      return {
+        error: {
+          message: 'Unable to initialize. This tenant is not active.',
+        }
+      };
+    }
+
+    var client = null;
+
     try {
-      fs.readdir('./tokens', (error, files) => {
-        if (files) {
-          files.map(async file => {
-            const [sessionName] = file.split('.data.json');
+      client = await bot.create(tenant.cnpj, undefined, undefined, {
+        logQR: true,
+        disableWelcome: true,
+      });
 
-            const tenant = await Tenant.findOne({
-              sessionName,
-              isActive: true,
-            });
+      onlineSessions[tenant.cnpj] = client;
 
-            if (!tenant) {
-              return;
-            }
+      client.onMessage(async message => {
+        await runMiddlewares(tenant.cnpj);
 
-            await listenMessages(tenant.sessionName);
+        if (message.from === '559236483445@c.us') {
+          const attndnce = await getAttendance(message, tenant.cnpj);
+          const response = await stages[attndnce.stage].execute(attndnce, message);
 
-          });
+          for (let msg of response) {
+            await client.sendText(message.from, msg);
+          }
         }
       });
 
-      console.log('[LOG]: Whatsapp sessions are going to reload');
+      return {
+        success: {
+          message: `${tenant.companyName}'s chatbot is online`
+        }
+      }
+
     } catch (error) {
-      console.log('[LOG]: Failed to reload whatsapp sessions');
+      return {
+        error: {
+          message: `Venom-bot initialization process failed for tenant ${tenant.companyName}. Try again`,
+        }
+      };
     }
   }
 
+  async function start() {
+    /*
+      The start() method is responsible
+      for initializing the chatbot manager.
+      This method should be called only one
+      time within application startup.
+    */
+
+    const tokens = await getPreExistingTokens();
+
+    if (!tokens) {
+      console.log('Não existem tokens');
+      return;
+    }
+
+    tokens.forEach(async token => {
+      const [tokenOwner] = token.split('.data.json');
+
+      const tenant = await Tenant.findOne({
+        cnpj: tokenOwner,
+      });
+
+      // Tenant existe?
+      if (!tenant) {
+        console.log('Tenant não existe');
+        return;
+      }
+
+      // Tenant está ativo
+      if (!(tenant.isActive)) {
+        console.log('Tenant não está ativo');
+        return;
+      }
+
+      const response = await initTenantBot(tenant.cnpj);
+
+      if (response?.error) {
+        console.log(`[LOG]: ${response.error.message}`);
+      }
+
+      if (response?.success) {
+        console.log(`[LOG]: ${response.success.message}`);
+      }
+
+    });
+  }
+
   const ChatbotPrototype = {
-    runMiddlewares: () => { runMiddlewares(); },
-    sessions: sessions,
+    onlineSessions: onlineSessions,
     middlewares: middlewares,
-    init: () => { reload() },
-    listenMessages: async (sessionName) => { await listenMessages(sessionName) },
-    use: (funcName, func) => { use(funcName, func) }
+    init: () => start(),
+    runMiddlewares: () => runMiddlewares(),
+    use: (funcName, func) => use(funcName, func)
   }
 
   constructor.prototype = ChatbotPrototype;
