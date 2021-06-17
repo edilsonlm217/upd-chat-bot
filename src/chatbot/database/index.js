@@ -14,16 +14,16 @@ class Database {
 
       providers.map(async tenant => {
         const { sessionName } = tenant;
-        const { dialect, host, username, password, database, port } = tenant;
+        const { dbHost, dbUsername, dbPassword, dbName, dbPort } = tenant;
 
         try {
           const connection = await new Sequelize({
-            dialect,
-            host,
-            port,
-            username,
-            password,
-            database,
+            dialect: 'mariadb',
+            host: dbHost,
+            port: dbPort,
+            username: dbUsername,
+            password: dbPassword,
+            database: dbName,
             define: {
               timestamps: false,
               underscored: true,
