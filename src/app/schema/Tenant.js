@@ -2,40 +2,61 @@ import mongoose from 'mongoose';
 
 const TenantSchema = new mongoose.Schema(
   {
-    nome: {
+    name: {
       type: String,
+      required: true,
+    },
+    companyName: {
+      type: String,
+      unique: true,
       required: true,
     },
     cnpj: {
       type: String,
+      unique: true,
       required: true,
     },
-    dialect: {
+    phoneNumber: {
       type: String,
       required: true,
     },
-    host: {
+    email: {
       type: String,
+      unique: true,
       required: true,
     },
-    port: {
+    login: {
       type: String,
-      required: true,
-    },
-    username: {
-      type: String,
+      unique: true,
       required: true,
     },
     password: {
       type: String,
       required: true,
     },
-    database: {
+    dbHost: {
       type: String,
       required: true,
     },
+    dbPort: {
+      type: String,
+      required: true,
+    },
+    dbUsername: {
+      type: String,
+      default: 'updata',
+    },
+    dbPassword: {
+      type: String,
+      default: 'Falcon31',
+    },
+    dbName: {
+      type: String,
+      default: 'mkradius',
+    },
     sessionName: {
       type: String,
+      unique: true,
       required: true,
     },
     isActive: {
