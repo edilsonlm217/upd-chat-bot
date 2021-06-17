@@ -5,7 +5,7 @@ import routes from './routes';
 
 import Mongo from './database';
 import TenancyDatabase from './chatbot/database';
-import Websocket from './services/websocket';
+import QrCodeEmitter from './chatbot/services/QrCodeEmitter';
 
 import Chatbot from './chatbot';
 import DatabaseMiddleware from './chatbot/middlewares/database';
@@ -32,7 +32,7 @@ class App {
   }
 
   socket() {
-    Websocket.init(this.server);
+    QrCodeEmitter.init(this.server);
   }
 
   async mongo() {
@@ -41,8 +41,8 @@ class App {
   }
 
   async bot() {
-    // await Chatbot.init();
-    // await Chatbot.use('DatabaseMiddleware', DatabaseMiddleware);
+    await Chatbot.init();
+    await Chatbot.use('DatabaseMiddleware', DatabaseMiddleware);
   }
 
   async tenats() {
