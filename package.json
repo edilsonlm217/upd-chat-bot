@@ -23,11 +23,14 @@
     "html-pdf": "^3.0.1",
     "http": "^0.0.1-security",
     "iconv": "^3.0.0",
+    "jsonwebtoken": "^8.5.1",
     "mariadb": "^2.5.3",
     "mongoose": "^5.12.7",
     "sequelize": "^6.6.2",
+    "sharp": "^0.28.3",
     "socket.io": "^4.1.2",
     "uuid": "^8.3.2",
-    "venom-bot": "^3.0.16"
+    "venom-bot": "^3.0.16",
+    "yup": "^0.32.9"
   }
 }
