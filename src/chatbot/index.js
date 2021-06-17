@@ -66,10 +66,6 @@ export default new function Chatbot() {
   }
 
   async function initTenantBot(tenantCnpj) {
-    /*
-      TODO Add comments for describing this method rsposibility
-    */
-
     const session = onlineSessions[tenantCnpj];
 
     if (session) {
@@ -98,6 +94,7 @@ export default new function Chatbot() {
       client = await bot.create(tenant.cnpj, undefined, undefined, {
         logQR: true,
         disableWelcome: true,
+        updatesLog: false,
       });
 
       onlineSessions[tenant.cnpj] = client;
@@ -112,6 +109,16 @@ export default new function Chatbot() {
           for (let msg of response) {
             await client.sendText(message.from, msg);
           }
+        }
+      });
+
+      client.onStreamChange(status => {
+        if (status === 'CONNECTED') {
+          onlineSessions[tenant.cnpj] = client;
+        }
+
+        if (status === 'DISCONNECTED') {
+          delete onlineSessions[tenant.cnpj];
         }
       });
 
@@ -177,12 +184,26 @@ export default new function Chatbot() {
     });
   }
 
+  async function shutDownTenatBot(tenantCnpj) {
+    /*
+      The shutDownTenatBot() method is responsible
+      for shutting down a tenant's bot. This method
+      does not delete whatsapp tokens.
+    */
+
+    const bot = onlineSessions[tenantCnpj];
+
+    await bot.close();
+    delete onlineSessions[tenantCnpj];
+  }
+
   const ChatbotPrototype = {
     onlineSessions: onlineSessions,
     middlewares: middlewares,
     init: () => start(),
+    use: (funcName, func) => use(funcName, func),
     runMiddlewares: () => runMiddlewares(),
-    use: (funcName, func) => use(funcName, func)
+    shutDownTenatBot: (tenantCnpj) => shutDownTenatBot(tenantCnpj),
   }
 
   constructor.prototype = ChatbotPrototype;
