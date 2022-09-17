@@ -6,7 +6,7 @@ import MessengerController from './app/controllers/MessengerController';
 
 const routes = new Router();
 
-routes.post('/add/tenant', TenantController.create);
+// routes.post('/add/tenant', TenantController.create);
 routes.get('/:sessionName/scan', WASessionController.create);
 routes.post('/whatsapp', MessengerController.store);
 

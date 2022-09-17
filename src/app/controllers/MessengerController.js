@@ -25,7 +25,7 @@ class MessengerController {
       } while (formattedString.includes(value));
     }
 
-    const html = 'http://provedor.updata.com.br/boleto/20boleto.php?titulo=70559';
+    const html = 'http://provedor.updata.com.br/boleto/boleto.hhvm?titulo=92916';
 
     request({ uri: html, encoding: null }, (error, response, body) => {
       const utf8String = iconv.decode(new Buffer(body), "ISO-8859-1");
