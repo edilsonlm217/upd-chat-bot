@@ -1,54 +1,50 @@
-import Tenant from '../schema/Tenant';
-import Chatbot from '../../chatbot';
+const venom = require('venom-bot');
+import Chatbot from '../../chatbot/index';
 
-const bot = require('venom-bot');
+// function start(client) {
+//   console.log('start começou a rodar')
+//   client.onMessage(async (message) => {
+//     try {
+//       const result = await client.sendText(message.from, 'Bem-vindo a Updata!');
+//       console.log('Result: ', result);
+//     } catch (error) {
+//       console.error('Error when sending: ', error);
+//     }
+//   });
+//   console.log('start finalizou!')
+// }
 
 class WhatsappSessionController {
-  async create(req, res) {
+  async store(req, res) {
     try {
-      const { sessionName } = req.params;
-
-      const tenant = await Tenant.findOne({
-        sessionName,
-        isActive: true,
+      const client = await venom.create({
+        session: 'mk-auth-session', // name of session
+        multidevice: false // for version not multidevice use false.(default: true)
       });
 
-      if (!tenant) {
-        return;
+      Chatbot.session = {
+        ...Chatbot.session,
+        'mk-auth-session': client
       }
 
-      const client = await bot.create(
-        sessionName,
-        (base64Qr, asciiQR, attempts, urlCode) => { console.log('haahha'); },
-        undefined,
-        {
-          logQR: true,
-          disableWelcome: true,
-          autoClose: 30000,
-        }
-      );
-
-      Chatbot.sessions[sessionName] = client;
-
-      client.onMessage(async message => {
-        await runMiddlewares(sessionName);
-
-        if (message.from === '559236483445@c.us') {
-          const attndnce = await getAttendance(message, sessionName);
-          const response = await stages[attndnce.stage].execute(attndnce, message);
-
-          for (let msg of response) {
-            await client.sendText(message.from, msg);
-          }
-        }
-      });
-
-      return res.json({ ok: true });
+      console.log(Chatbot.session)
     } catch (error) {
-      console.log(error);
-      console.log('[LOG]: Failed to create Whatsapp session');
+      console.log(error)
     }
+    console.log('Iniciando sessão')
+    return res.json({ ok: true })
   }
+
+  async update(req, res) {
+    console.log('Reiniciando sessão')
+    return res.json({ ok: true })
+  }
+
+  async destroy(req, res) {
+    console.log('Encerrando sessão')
+    return res.json({ ok: true })
+  }
+
 }
 
 export default new WhatsappSessionController();
