@@ -1,15 +1,25 @@
 import Chatbot from '../../chatbot/index'
+import { getSessionByClientAccount } from '../../services/WhatsappAgent';
 class MessengerController {
   async store(req, res) {
-    const client = Chatbot.session['mk-auth-session'];
+    const { to, msg, u: user, p: pwd } = req.query;
 
-    try {
-      await client.sendText(`${req.body.to}@c.us`, req.body.msg);
-      console.log('Bot says: Mensagem enviada');
-    } catch (error) {
-      console.error('Error when sending: ', error);
+    const session = getSessionByClientAccount(user);
+
+    if (!session) {
+      const error = {
+        title: "Bad Request",
+        detail: "There is no session owned by this user",
+        status: 400,
+      };
+      console.error(error);
+      return res.status(400).json(error);
     }
-    return res.json({ ok: true })
+
+    session.sendText(to, msg);
+
+    return res.send();
+
     // const { to: number, msg: message } = req.body;
     // var msg = message;
 
