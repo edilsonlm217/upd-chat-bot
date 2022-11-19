@@ -26,6 +26,7 @@
     "mariadb": "^2.5.3",
     "mongoose": "^5.12.7",
     "sequelize": "^6.6.2",
+    "socket.io": "^4.5.3",
     "uuid": "^8.3.2",
     "venom-bot": "^4.2.1"
   },
