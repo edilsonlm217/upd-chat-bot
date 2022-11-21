@@ -1,4 +1,3 @@
-import Chatbot from '../../chatbot/index'
 import { getSessionByClientAccount } from '../../services/WhatsappAgent';
 class MessengerController {
   async store(req, res) {
