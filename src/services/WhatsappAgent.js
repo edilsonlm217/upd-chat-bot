@@ -1,6 +1,3 @@
-const venom = require('venom-bot');
-import socketio from 'socket.io';
-
 const sessions = {};
 
 function registerWhatsappAgent(venomSession, client) {
