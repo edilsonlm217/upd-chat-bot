@@ -28,7 +28,7 @@
     "sequelize": "^6.6.2",
     "socket.io": "^4.5.3",
     "uuid": "^8.3.2",
-    "venom-bot": "^4.2.1"
+    "venom-bot": "^4.3.5"
   },
   "repository": "https://github.com/edilsonlm217/upd-chat-bot.git"
 }
