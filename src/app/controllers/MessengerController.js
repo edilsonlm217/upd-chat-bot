@@ -15,7 +15,7 @@ class MessengerController {
       return res.status(400).json(error);
     }
 
-    session.sendText(to, msg);
+    session.sendText(`${to}@c.us`, msg);
 
     return res.send();
 
