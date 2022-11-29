@@ -7,7 +7,7 @@ class Websocket {
 
     start(server) {
         const io = socketio(server, { cors: { origin: '*' } });
-        
+
         io.on("connection", async socket => {
             const { client } = socket.handshake.query;
             socket.emit("successfully-connected");
@@ -22,10 +22,12 @@ class Websocket {
                     }
                 });
                 registerWhatsappAgent(venomSession, client);
+                socket.emit("qr-code-successfully-read");
+                socket.disconnect();
             } catch (error) {
-                console.log(error);
+                socket.emit("qr-code-generation-expired")
+                socket.disconnect();
             }
-            socket.disconnect();
         });
     }
 
