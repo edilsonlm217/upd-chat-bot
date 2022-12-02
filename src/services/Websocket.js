@@ -1,6 +1,7 @@
 import socketio from 'socket.io';
-import { startVenomSession } from './Venom';
-import { registerWhatsappAgent } from './WhatsappAgent';
+import { DeleteOnGoingRequestBySessionName, GetOnGoingRequestBySessionName } from './RequestMonitor';
+import { SaveSession } from './SessionStore';
+import { start } from './VenomStarter';
 
 class Websocket {
     constructor() { }
@@ -9,28 +10,36 @@ class Websocket {
         const io = socketio(server, { cors: { origin: '*' } });
 
         io.on("connection", async socket => {
-            const { client } = socket.handshake.query;
-            socket.emit("successfully-connected");
-            socket.emit("qr-code-generation-started");
+            const { sessionName } = socket.handshake.query;
+            const request = GetOnGoingRequestBySessionName(sessionName);
+            if (request) {
+                socket.emit(
+                    "on-going-qr-code-generation-detected",
+                    { createdAt: request.createdAt }
+                );
+                socket.disconnect();
+            }
+            socket.emit("qr-code-generation-starting");
             try {
-                const venomSession = await startVenomSession({
-                    client: client,
+                const venomSession = await start({
+                    sessionName,
                     callback: (base64Qrimg) => {
-                        socket.emit("qr-code-generation-done", {
+                        socket.emit("qr-code-ready", {
                             qrcode: base64Qrimg,
                         });
                     }
                 });
-                registerWhatsappAgent(venomSession, client);
+                SaveSession(venomSession, sessionName);
+                DeleteOnGoingRequestBySessionName(sessionName);
                 socket.emit("qr-code-successfully-read");
                 socket.disconnect();
             } catch (error) {
                 socket.emit("qr-code-generation-expired")
+                DeleteOnGoingRequestBySessionName(sessionName);
                 socket.disconnect();
             }
         });
     }
-
 }
 
 export default new Websocket();
