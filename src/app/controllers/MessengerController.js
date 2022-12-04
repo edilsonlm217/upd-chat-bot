@@ -1,9 +1,10 @@
-import { getSessionByClientAccount } from '../../services/WhatsappAgent';
+import { GetSessionBySessionName } from '../../services/SessionStore';
+
 class MessengerController {
     async store(req, res) {
         const { to, msg, u: user, p: pwd } = req.query;
 
-        const session = getSessionByClientAccount(user);
+        const session = GetSessionBySessionName(user);
 
         if (!session) {
             const error = {

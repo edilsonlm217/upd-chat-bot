@@ -1,9 +1,9 @@
-import { getSessionByClientAccount } from "../../services/WhatsappAgent";
+import { GetSessionBySessionName } from "../../services/SessionStore";
 
 class SessionController {
     async show(req, res) {
         const { sessionName } = req.params;
-        const session = getSessionByClientAccount(sessionName);
+        const session = GetSessionBySessionName(sessionName);
 
         if (!session) {
             const error = {

@@ -1,5 +1,5 @@
 import socketio from 'socket.io';
-import { DeleteOnGoingRequestBySessionName, GetOnGoingRequestBySessionName } from './RequestMonitor';
+import { DeleteOnGoingRequestBySessionName, GetOnGoingRequestBySessionName, RegisterOnGoingRequestBySessionName } from './RequestMonitor';
 import { SaveSession } from './SessionStore';
 import { start } from './VenomStarter';
 
@@ -18,8 +18,10 @@ class Websocket {
                     { createdAt: request.createdAt }
                 );
                 socket.disconnect();
+                return;
             }
             socket.emit("qr-code-generation-starting");
+            RegisterOnGoingRequestBySessionName(sessionName);
             try {
                 const venomSession = await start({
                     sessionName,
