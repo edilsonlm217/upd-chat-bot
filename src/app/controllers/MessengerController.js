@@ -2,7 +2,7 @@ import { GetSessionBySessionName } from '../../services/SessionStore';
 
 class MessengerController {
     async store(req, res) {
-        const { to, msg, u: user, p: pwd } = req.query;
+        const { to, msg, u: user, p: pwd } = req.body;
 
         const session = GetSessionBySessionName(user);
 
@@ -16,7 +16,7 @@ class MessengerController {
             return res.status(400).json(error);
         }
 
-        await session.checkNumberStatus(`${to}@c.us`)
+        session.checkNumberStatus(`${to}@c.us`)
             .then(() => { session.sendText(`${to}@c.us`, msg) })
             .catch((erro) => {
                 return res.status(500).json({
